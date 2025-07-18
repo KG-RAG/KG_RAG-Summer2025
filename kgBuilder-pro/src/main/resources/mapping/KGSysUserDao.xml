@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.warmer.web.dao.KGSysUserDao">
+	<select id="selectByUserNameAndPasswordAndIsTeacher" resultType="com.warmer.web.entity.KGSysUser">
+		SELECT * FROM sys_user
+		WHERE username = #{userName}
+		  AND password = #{password}
+		  AND isteacher = #{isTeacher}
+	</select>
+	<select id="selectByUserName" resultType="com.warmer.web.entity.KGSysUser">
+		SELECT * FROM sys_user
+		WHERE username = #{userName}
+	</select>
+	<insert id="insertUser" parameterType="com.warmer.web.entity.KGSysUser">
+		INSERT INTO sys_user (username, password, isteacher, createtime, updatetime)
+		VALUES (#{userName}, #{password}, #{isTeacher}, NOW(), NOW())
+	</insert>
+</mapper>

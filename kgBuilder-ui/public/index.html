@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <title>KGTeach</title>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+    <script src="<%= BASE_URL %>static/icon/iconfont.js"></script>
+    <!-- 引入在线客服 -->
+    <script
+    src="https://ai.youdao.com/saas/qanything/js/agent-iframe-min.js"
+    id="qanything-iframe"
+    data-agent-src="https://ai.youdao.com/saas/qanything/#/bots/8F027FE41F3D4DA9/share"
+    data-default-open=false
+    data-drag=true
+    data-open-icon="https://download.ydstatic.com/ead/icon-qanything-iframe-btn.png"
+    data-close-icon="https://download.ydstatic.com/ead/icon-qanything-iframe-btn.png"
+    defer
+  >
+</script>
+  </body>
+</html>

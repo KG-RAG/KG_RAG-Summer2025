@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: kg-builder
+  profiles:
+    active: dev
+    resources:
+      static-locations: classpath:/static/,file:D:/kgmanager/exportGraph/
+
+
+
+
