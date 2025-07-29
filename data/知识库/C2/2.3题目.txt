@@ -1,0 +1,14 @@
+1.假定变量i、f、d的类型分别是int、float和double，它们可以取除+∞、-∞和NaN以外的任意值。请判断下列每个C语言关系表达式在32位机器上运行时是否永真。
+    A.  i==(int) (float)i
+    B．f== (float) (int)f
+    C．i== (int) (double)i
+    D.  f==(float) (double)f
+    E.  d== (float)d
+    F.  f==-(-f）
+    G.  (d+f)-d==f
+
+2.变量i,f,d的类型分别是int, float和double.下列C语言表达式在32位机器上运行时结果永真的是
+A.i==(int)(float)i
+B.f== (float) (int)f
+C.i==(int)(double)i
+D.d==(float)d

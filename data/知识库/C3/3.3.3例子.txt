@@ -1,0 +1,21 @@
+假设short型变量x被编译器分配在寄存器AX中，R[ax] =FF80H，则以下汇编代码段执行后变量x的机器数和真值分别是多少？
+    movw    %ax,  %dx
+    salw    $2，%ax
+    addl    %dx, %ax
+    sarw    $1,  %ax
+
+R[ax] =FF80H==(1111 1111 1000 0000)B
+    movw    %ax,  %dx
+	 R[ax] =FF80H,  R[dx] =FF80H
+    salw    $2，%ax
+	 R[ax] =FE00H=(11 1111 1000 0000 00)， R[dx] =FF80H
+    addw    %dx, %ax
+	R[ax] =FD80H,  R[dx] =FF80H
+    sarw    $1,  %ax
+	R[ax] =FFC0H,  R[dx] =FF80H
+
+FF80H=(1111 1111 1000 0000)B
+算术左移时，AX中的内容在移位前、后符号未发生变化，故OF=0，没有溢出。
+最终AX的内容为FEC0H，解释为short型整数时，其值为-320。
+$2和$1分别表示立即数2和1。假设上述代码段执行前R[ax]=x，则执行(x<<2)+x）>>1后，R[ax] =5x/2。
+验证： x=-128，5x/2=-320。结果正确。

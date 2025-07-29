@@ -1,0 +1,35 @@
+1.IA-32中指令“leal 8(%edx,%esi, 4),%edx”的功能是()
+A. R[edx] + R[esi] * 4 + 8 - R[edx]
+B. R[esi] + R[edx] * 4 + 8 - R[edx]
+C. R[edx] ← R[edx] + R[esi] * 4 + 8
+D. R[edx] = R[esi] + R[edx] * 4 + 8
+
+2.假设变量 x 和 y 分别存放在寄存器 EAX 和 ECX 中，leal 4(%eax,%ecx),%edx 指令执行后寄存器 EDX 中的结果为（）
+A. R[edx] = x + y + 4
+B. R[edx] = x + y * 4
+C. R[edx] = (x + y) * 4
+D. R[edx] = x * y + 4
+
+3.IA-32中指令“movl 8(%ebp), %edx”的功能是( )
+A. R[edx] = M[R[ebp] + 8]
+B. R[ebp] + 8 = R[edx]
+C. R[edx] = R[ebp] + 8
+D. M[R[ebp] + 8] ← R[edx]
+
+4.IA-32中指令“pushl %ebp”的功能是() 
+A. R[esp]←R[esp]-4, M[R[esp]]←R[ebp]
+B. R[esp]←R[esp]+4, M[R[esp]]←R[ebp]
+C. M[R[esp]]←R[ebp], R[esp]←R[esp]-4
+D. M[R[esp]]←R[ebp], R[esp]←R[esp]+4
+
+5.IA-32中指令“popl %ebp”的功能是( )。 
+A. R[esp]←R[esp]-4, R[ebp]←M[R[esp]]
+B. R[esp]←R[esp]+4, R[ebp]←M[R[esp]]
+C. R[ebp]←M[R[esp]], R[esp]←R[esp]-4
+D. R[ebp]←M[R[esp]], R[esp]←R[esp]+4
+
+6.IA-32中指令“mov 8(%edx,%esi, 4),%edx"的功能是()
+A. M[R[edx]+R[esi]*4+8]←R[edx
+B. M[R[esi]+R[edx]*4+8]-R[edx]
+C. R[edx]←M[R[edx]+R[esi]*4+8]
+D. R[edx]←M[R[esi]+R[edx]*4+8]

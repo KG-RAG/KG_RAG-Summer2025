@@ -1,0 +1,65 @@
+1. 假定全局short型数组a的起始地址为0x804908c，则a[2]的地址是()。
+A. 0x804908e
+B. 0x8049090
+C. 0x8049092
+D. 0x8049094
+
+2. 假定全局double型数组a的起始地址为0x804908c，则a[i]的地址是()。
+A. 0x804908c+i
+B. 0x804908c+2×i
+C. 0x804908c+4×i
+D. 0x804908c+8×i
+
+3. 假定全局数组a的声明为char *a[8], a的首地址为0x80498c0, i在ECX中，现要将a[i]取到EAX相应宽度的寄存器中，则所用的汇编指令是()。
+A. mov 0x80498c0(,%ecx),%ah
+B. mov (0x80498c0,%ecx),%ah
+C. mov 0x80498c0(,%ecx,4),%eax
+D. mov (0x80498c0,%ecx,4),%eax
+
+4. 假定全局数组a的声明为double *a[8], a的首地址为0x80498c0, i在ECX中，现要将a[i]取到EAX相应宽度的寄存器中，则所用的汇编指令是()。
+A. mov 0x80498c0(,%ecx,4),%eax
+B. mov (0x80498c0,%ecx,4),%eax
+C. mov 0x80498c0(,%ecx,8),%eax
+D. mov (0x80498c0,%ecx,8),%eax
+
+5. 假定局部int型数组a的首地址在EDX中，i在ECX中，现要将a[i]取到EAX相应宽度的寄存器中，则所用的汇编指令是()。
+A. mov (%edx,%ecx,2),%ax
+B. mov (%edx,%ecx,2),%eax
+C. mov (%edx,%ecx,4),%ax
+D. mov (%edx,%ecx,4),%eax
+
+6. 假定局部数组a的声明为int a[4]={0,-1,300,20}, a的首地址为R[ebp]-16, 则在地址R[ebp]-4处存放的是()。
+A. 0
+B. -1
+C. 300
+D. 20
+
+7. 假定局部数组a的声明为int a[4]={0,-1,300,20}, a的首地址为R[ebp]-16, 则将a的首地址取到EDX的汇编指令是()。
+A. movl -16(%ebp), %edx
+B. movl -16(%ebp,4), %edx
+C. leal -16(%ebp), %edx
+D. leal -16(%ebp,4), %edx
+
+8. 某C语言程序中有以下两个变量声明:
+int a[10];
+int *ptr=&a[0];
+则ptr+i的值为()。
+A. &a[0]+i
+B. &a[0]+2×i
+C. &a[0]+4×i
+D. &a[0]+8×i
+
+9. 假定结构体类型cont_info的声明如下:
+struct cont_info{
+    char id[8];
+    char name[16];
+    unsigned post;
+    char address[100];
+    char phone[20];
+};
+
+10.若结构体变量x初始化定义为struct cont_info x={"00000010","ZhangS",210022,"273 long street","12345678"}, x的首地址在EDX中，则unsigned xpost=x.post;所对应的汇编指令为()。
+A. movl 0x24(%edx), %eax
+B. movl 0x18(%edx), %eax
+C. leal 0x24(%edx), %eax
+D. leal 0x18(%edx), %eax

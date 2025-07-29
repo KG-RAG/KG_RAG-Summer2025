@@ -1,0 +1,5 @@
+将Hello.c转换为Hello.s, Helo.c为文本格式文件，Hello.s为__格式。
+A. 二进制
+B. 十进制
+C. 文本
+D. 随机

@@ -1,0 +1,17 @@
+R[ax=FOFOH,R[bxI=FAFOH,则执行指令“add %bx,%ax”后,CF、OF、ZF、SF的状态为（）
+A. CF=1.SF=1.0F=1.ZF=0
+B. CF=0,SF=1,OF=0,ZF=0
+C. CF=1,SF=1.OF=0.ZF=0
+D. CF=1.SF=1.OF=1.ZF=0
+
+2.执行乘法指令中mull %ecx后:乘积的高32位数值存放在寄存器( )中。
+A. EAX
+B. EBX
+C. ECX
+D. EDX
+
+3.若乘法IMUL指令中给出三个操作数REG、SRC和MM，则将SRC和立即数IMM相乘，结果在( )
+A. IMM
+B. REG
+C. SRC
+D.Mem

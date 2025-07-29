@@ -1,0 +1,11 @@
+1. 假设调用关系如下：func.o → libx.a 和 liby.a 中的函数，libx.a → libz.a 中的函数，libx.a 和 liby.a 之间、liby.a 和 libz.a 相互独立，则以下几个命令行中，静态链接发生错误的命令是（）。
+A. gcc -static -o myfunc func.o libx.a liby.a libz.a
+B. gcc -static -o myfunc func.o liby.a libz.a libx.a
+C. gcc -static -o myfunc func.o libx.a libz.a liby.a
+D. gcc -static -o myfunc func.o liby.a libx.a libz.a
+
+2. 假设调用关系如下：func1.o → func2.o，func1.o → libx.a 中的函数，func2.o → libx.a 中的函数，libx.a → liby.a，同时 liby.a → libx.a，则以下命令行中，能够正确进行静态链接的命令是（）。
+A. gcc -static -o myfunc func1.o func2.o libx.a liby.a libx.a
+B. gcc -static -o myfunc func2.o func1.o liby.a libx.a liby.a
+C. gcc -static -o myfunc libx.a liby.a libx.a func1.o func2.o
+D. gcc -static -o myfunc liby.a libx.a liby.a func1.o func2.o

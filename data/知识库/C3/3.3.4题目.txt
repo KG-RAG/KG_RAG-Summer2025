@@ -1,0 +1,11 @@
+1. ja/jnbe label 跳转条件是（）
+A. 无符号整数A > B
+B. 无符号整数A >= B
+C. 带符号整数A > B
+D. 带符号整数A >= B
+
+2. jljnge label跳转条件是( )
+A. 无符号整数A < B
+B. 无符号整数A <= B
+C. 带符号整数A < B
+D. 带符号整数A <= B
