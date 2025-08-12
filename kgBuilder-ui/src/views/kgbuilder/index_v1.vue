@@ -25,6 +25,25 @@
               >删除图谱</el-tag
             >
 
+            <!-- Agent智能抽取模块入口 -->
+            <el-tag
+              class="tag-ml-5"
+              type="success"
+              @click="goToAgentExtraction"
+              style="background-color: #67C23A; border-color: #67C23A;"
+            >
+              🤖 智能抽取
+            </el-tag>
+
+            <el-tag
+              class="tag-ml-5"
+              type="warning"
+              @click="goToBatchExtraction"
+              style="background-color: #E6A23C; border-color: #E6A23C;"
+            >
+              📦 批量抽取
+            </el-tag>
+
             <el-tag
               @click="matchDomainGraph(m)"
               v-for="(m, index) in pageModel.nodeList"
@@ -1176,6 +1195,12 @@ export default {
           });
         }
       });
+    },
+    goToAgentExtraction() {
+      this.$router.push({ name: 'AgentExtraction' });
+    },
+    goToBatchExtraction() {
+      this.$router.push({ name: 'BatchExtraction' });
     }
   }
 };

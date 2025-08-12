@@ -20,6 +20,17 @@ const routes = [
     name: "Register",
     component: () => import("../components/register.vue")
   },
+  // Agent智能抽取模块路由
+  {
+    path: "/agent/extraction",
+    name: "AgentExtraction",
+    component: () => import("../views/agent/AgentExtraction.vue")
+  },
+  {
+    path: "/agent/batch",
+    name: "BatchExtraction",
+    component: () => import("../views/agent/BatchExtraction.vue")
+  },
   // {
   //   path: "/builder",
   //   name: "builder",

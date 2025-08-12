@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Application",
+            "request": "launch",
+            "mainClass": "com.warmer.Application",
+            "vmArgs": "-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Dconsole.encoding=UTF-8",
+            "env": {
+                "LANG": "zh_CN.UTF-8",
+                "LC_ALL": "zh_CN.UTF-8",
+                "PYTHONIOENCODING": "utf-8"
+            }
+        }
+    ]
+} 

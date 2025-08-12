@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
     <description>Demo project for Spring Boot</description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <dependency>
@@ -59,8 +59,25 @@
             <version>3.5.9</version> <!-- 使用最新的稳定版本 -->
         </dependency>
 
+        <!-- HanLP自然语言处理工具 -->
+        <dependency>
+            <groupId>com.hankcs</groupId>
+            <artifactId>hanlp</artifactId>
+            <version>portable-1.7.8</version>
+        </dependency>
 
+        <!-- 添加更多NLP相关依赖 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+        </dependency>
 
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.78</version>
+        </dependency>
 
     </dependencies>
     <build>
