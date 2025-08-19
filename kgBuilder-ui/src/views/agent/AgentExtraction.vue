@@ -65,13 +65,16 @@
         <el-card class="result-card">
           <div slot="header">
             <span>📊 抽取结果</span>
-            <el-button 
-              style="float: right; padding: 3px 0" 
-              type="text"
-              @click="handleExport"
-              v-if="result">
-              导出结果
-            </el-button>
+            <div style="float:right">
+              <el-button type="text" @click="handleImport" :disabled="!canImport">导入图谱</el-button>
+              <el-button 
+                style="padding: 3px 0" 
+                type="text"
+                @click="handleExport"
+                v-if="result">
+                导出结果
+              </el-button>
+            </div>
           </div>
           
           <div v-if="!result" class="empty-result">
@@ -88,88 +91,47 @@
               style="margin-bottom: 20px">
             </el-alert>
 
-            <!-- 关键词结果 -->
-            <div v-if="result.keywordsTFIDF && result.keywordsTFIDF.length > 0" class="result-section">
-              <h4>🔑 TF-IDF关键词</h4>
-              <el-tag 
-                v-for="keyword in result.keywordsTFIDF" 
-                :key="keyword"
-                style="margin: 5px">
-                {{ keyword }}
-              </el-tag>
-            </div>
-
-            <div v-if="result.keywordsTextRank && result.keywordsTextRank.length > 0" class="result-section">
-              <h4>📈 TextRank关键词</h4>
-              <el-tag 
-                v-for="keyword in result.keywordsTextRank" 
-                :key="keyword"
-                type="success"
-                style="margin: 5px">
-                {{ keyword }}
-              </el-tag>
-            </div>
-
-            <!-- 关键句结果 -->
-            <div v-if="result.keySentences && result.keySentences.length > 0" class="result-section">
-              <h4>💬 关键句</h4>
-              <el-card 
-                v-for="(sentence, index) in result.keySentences" 
-                :key="index"
-                shadow="hover"
-                style="margin: 10px 0">
-                <div>{{ sentence }}</div>
-              </el-card>
-            </div>
-
-            <!-- 实体结果 -->
-            <div v-if="result.entities && result.entities.length > 0" class="result-section">
-              <h4>👤 识别实体</h4>
-              <el-table :data="result.entities" size="mini" style="width: 100%">
-                <el-table-column prop="name" label="实体名称"></el-table-column>
-                <el-table-column prop="type" label="实体类型">
-                  <template slot-scope="scope">
-                    <el-tag :type="getEntityTypeColor(scope.row.type)">
-                      {{ scope.row.type }}
-                    </el-tag>
-                  </template>
-                </el-table-column>
+            <!-- 三元组结果 -->
+            <div v-if="result.triples && result.triples.length > 0" class="result-section">
+              <h4>🧩 三元组</h4>
+              <el-table :data="result.triples" size="mini" style="width: 100%">
+                <el-table-column prop="subject" label="主语"></el-table-column>
+                <el-table-column prop="predicate" label="谓语"></el-table-column>
+                <el-table-column prop="object" label="宾语"></el-table-column>
                 <el-table-column prop="confidence" label="置信度">
                   <template slot-scope="scope">
                     <el-progress 
-                      :percentage="Math.round(scope.row.confidence * 100)"
-                      :color="getConfidenceColor(scope.row.confidence)">
+                      :percentage="Math.round((scope.row.confidence || 0) * 100)"
+                      :color="getConfidenceColor(scope.row.confidence || 0)">
                     </el-progress>
                   </template>
                 </el-table-column>
               </el-table>
             </div>
 
-            <!-- 关系结果 -->
-            <div v-if="result.relations && result.relations.length > 0" class="result-section">
-              <h4>🔗 实体关系</h4>
-              <el-table :data="result.relations" size="mini" style="width: 100%">
-                <el-table-column prop="sourceEntityId" label="源实体"></el-table-column>
-                <el-table-column prop="relationType" label="关系类型">
-                  <template slot-scope="scope">
-                    <el-tag type="warning">{{ scope.row.relationType }}</el-tag>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="targetEntityId" label="目标实体"></el-table-column>
-                <el-table-column prop="confidence" label="置信度">
-                  <template slot-scope="scope">
-                    <el-progress 
-                      :percentage="Math.round(scope.row.confidence * 100)"
-                      :color="getConfidenceColor(scope.row.confidence)">
-                    </el-progress>
-                  </template>
-                </el-table-column>
-              </el-table>
+            <div v-else class="result-section">
+              <el-empty description="未识别到三元组"></el-empty>
             </div>
           </div>
         </el-card>
       </el-col>
     </el-row>
+
+    <!-- 导入弹窗 -->
+    <el-dialog title="导入图谱" :visible.sync="importVisible" width="480px">
+      <el-form :model="importForm" label-width="100px">
+        <el-form-item label="领域/图谱名">
+          <el-input v-model="importForm.domain" placeholder="例如: 教育图谱"/>
+        </el-form-item>
+        <el-form-item label="来源标记">
+          <el-input v-model="importForm.source" placeholder="默认 agent"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="importVisible=false">取消</el-button>
+        <el-button type="primary" :loading="importing" @click="confirmImport">确定导入</el-button>
+      </div>
+    </el-dialog>
 
     <!-- 示例文本区域 -->
     <el-card style="margin-top: 20px">
@@ -204,6 +166,12 @@ export default {
   data() {
     return {
       loading: false,
+      importing: false,
+      importVisible: false,
+      importForm: {
+        domain: '',
+        source: 'agent'
+      },
       form: {
         method: 'auto',
         text: '',
@@ -224,6 +192,11 @@ export default {
           text: '知识图谱（Knowledge Graph）是人工智能领域的重要技术，它以结构化的方式表示知识，通过实体、属性和关系来描述现实世界中的概念和它们之间的联系。知识图谱可以支持多种智能应用，包括智能问答、推荐系统、搜索引擎优化等。在学术界，知识图谱的研究涉及自然语言处理、机器学习、数据库等多个领域。'
         }
       ]
+    }
+  },
+  computed: {
+    canImport() {
+      return this.result && Array.isArray(this.result.triples) && this.result.triples.length > 0
     }
   },
   methods: {
@@ -274,86 +247,82 @@ export default {
         }
       } catch (error) {
         console.error('抽取失败:', error)
-        console.error('错误详情:', {
-          message: error.message,
-          response: error.response,
-          status: error.response?.status,
-          data: error.response?.data
-        })
-        
-        // 显示具体错误信息
-        let errorMessage = '抽取失败，请检查网络连接或联系管理员'
-        if (error.response?.data?.msg) {
-          errorMessage = error.response.data.msg
-        } else if (error.message) {
-          errorMessage = error.message
-        }
-        
+        let errorMessage = error.response?.data?.msg || error.message || '抽取失败，请检查网络连接或联系管理员'
         this.$message.error(errorMessage)
       } finally {
         this.loading = false
       }
     },
 
-    /**
-     * 清空表单
-     */
     handleClear() {
       this.form.text = ''
       this.result = null
     },
 
-    /**
-     * 加载示例文本
-     */
     loadExample(text) {
       this.form.text = text
     },
 
-    /**
-     * 导出结果
-     */
     handleExport() {
       if (!this.result) return
-      
       const data = {
         timestamp: new Date().toISOString(),
         originalText: this.result.originalText,
         extractionMethod: this.result.extractionMethod,
-        keywordsTFIDF: this.result.keywordsTFIDF,
-        keywordsTextRank: this.result.keywordsTextRank,
-        keySentences: this.result.keySentences,
-        entities: this.result.entities,
-        relations: this.result.relations
+        triples: this.result.triples || []
       }
-
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `agent-extraction-result-${Date.now()}.json`
+      a.download = `agent-extraction-triples-${Date.now()}.json`
       a.click()
       URL.revokeObjectURL(url)
-      
-      this.$message.success('结果已导出')
+      this.$message.success('三元组已导出')
     },
 
-    /**
-     * 获取实体类型颜色
-     */
-    getEntityTypeColor(type) {
-      const colorMap = {
-        'PERSON': 'primary',
-        'LOCATION': 'success',
-        'ORGANIZATION': 'warning',
-        'CONCEPT': 'info'
+    handleImport() {
+      if (!this.canImport) {
+        this.$message.warning('暂无可导入的三元组')
+        return
       }
-      return colorMap[type] || 'default'
+      this.importVisible = true
     },
 
-    /**
-     * 获取置信度颜色
-     */
+    async confirmImport() {
+      if (!this.importForm.domain.trim()) {
+        this.$message.warning('请填写领域/图谱名')
+        return
+      }
+      this.importing = true
+      try {
+        const payload = {
+          domain: this.importForm.domain.trim(),
+          source: this.importForm.source || 'agent',
+          triples: (this.result.triples || []).map(t => ({
+            subject: t.subject,
+            predicate: t.predicate,
+            object: t.object,
+            confidence: t.confidence,
+            subjectType: t.subjectType,
+            objectType: t.objectType
+          }))
+        }
+        const res = await agentExtractionApi.importTriples(payload)
+        if (res.code === 200) {
+          this.$message.success('导入成功')
+          this.importVisible = false
+        } else {
+          this.$message.error(res.msg || '导入失败')
+        }
+      } catch (e) {
+        console.error('导入失败', e)
+        this.$message.error(e.response?.data?.msg || e.message || '导入失败')
+      } finally {
+        this.importing = false
+      }
+    },
+
     getConfidenceColor(confidence) {
       if (confidence >= 0.8) return '#67C23A'
       if (confidence >= 0.6) return '#E6A23C'

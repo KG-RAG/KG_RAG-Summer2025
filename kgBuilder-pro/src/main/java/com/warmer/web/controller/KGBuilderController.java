@@ -477,6 +477,40 @@ public class KGBuilderController extends BaseController {
     }
 
     /**
+     * 直接导入三元组为图谱
+     */
+    @PostMapping("/importTriples")
+    public R<String> importTriples(@RequestBody ImportTriplesRequest request) {
+        try {
+            if (request == null || request.getTriples() == null || request.getTriples().isEmpty()) {
+                return R.error("三元组为空");
+            }
+            String domain = request.getDomain();
+            if (StringUtil.isBlank(domain)) {
+                return R.error("domain不能为空");
+            }
+            List<Map<String, Object>> params = new ArrayList<>();
+            for (ImportTriplesRequest.TripleItem t : request.getTriples()) {
+                if (StringUtil.isBlank(t.getSubject()) || StringUtil.isBlank(t.getPredicate()) || StringUtil.isBlank(t.getObject())) continue;
+                Map<String, Object> row = new HashMap<>();
+                row.put("SourceNode", t.getSubject());
+                row.put("TargetNode", t.getObject());
+                row.put("RelationShip", t.getPredicate());
+                row.put("Source", StringUtil.isBlank(request.getSource()) ? "agent" : request.getSource());
+                params.add(row);
+            }
+            if (params.isEmpty()) {
+                return R.error("有效三元组为空");
+            }
+            kgGraphService.batchCreateGraph(domain, params);
+            return R.success("导入成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.error("导入失败: " + e.getMessage());
+        }
+    }
+
+    /**
      * 导出图谱
      *
      * @param request

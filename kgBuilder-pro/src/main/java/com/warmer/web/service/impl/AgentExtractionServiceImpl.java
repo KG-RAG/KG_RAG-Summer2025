@@ -3,6 +3,7 @@ package com.warmer.web.service.impl;
 import com.warmer.web.entity.ExtractionEntity;
 import com.warmer.web.entity.ExtractionRelation;
 import com.warmer.web.entity.ExtractionResult;
+import com.warmer.web.entity.ExtractionTriple;
 import com.warmer.web.service.AgentExtractionService;
 import com.warmer.web.util.HanLPUtil;
 import com.warmer.web.util.TFIDFUtil;
@@ -50,6 +51,7 @@ public class AgentExtractionServiceImpl implements AgentExtractionService {
                 .keywordsTFIDF(keywords)
                 .entities(new ArrayList<>())
                 .relations(new ArrayList<>())
+                .triples(new ArrayList<>())
                 .keywordsTextRank(new ArrayList<>())
                 .keySentences(new ArrayList<>())
                 .statistics(statistics)
@@ -90,6 +92,7 @@ public class AgentExtractionServiceImpl implements AgentExtractionService {
                 .keySentences(keySentences)
                 .entities(new ArrayList<>())
                 .relations(new ArrayList<>())
+                .triples(new ArrayList<>())
                 .keywordsTFIDF(new ArrayList<>())
                 .statistics(statistics)
                 .timestamp(System.currentTimeMillis())
@@ -128,10 +131,12 @@ public class AgentExtractionServiceImpl implements AgentExtractionService {
             log.info("HanLP实体识别流程结束，准备返回结果");
             
             log.info("开始构建 ExtractionResult 对象");
+            List<ExtractionTriple> triples = buildTriples(entities, relations);
             ExtractionResult result = ExtractionResult.builder()
                 .originalText(text)
                 .entities(entities)
                 .relations(relations)
+                .triples(triples)
                 .keywordsTFIDF(new ArrayList<>())
                 .keywordsTextRank(new ArrayList<>())
                 .keySentences(new ArrayList<>())
@@ -185,6 +190,7 @@ public class AgentExtractionServiceImpl implements AgentExtractionService {
             log.info("混合抽取流程结束，准备返回结果");
             
             log.info("开始构建 ExtractionResult 对象");
+            List<ExtractionTriple> triples = buildTriples(entities, relations);
             ExtractionResult result = ExtractionResult.builder()
                 .originalText(text)
                 .keywordsTFIDF(tfidfKeywords)
@@ -192,6 +198,7 @@ public class AgentExtractionServiceImpl implements AgentExtractionService {
                 .keySentences(keySentences)
                 .entities(entities)
                 .relations(relations)
+                .triples(triples)
                 .statistics(statistics)
                 .timestamp(System.currentTimeMillis())
                 .extractionMethod("Hybrid")
@@ -213,6 +220,12 @@ public class AgentExtractionServiceImpl implements AgentExtractionService {
             int topK = calculateTopK(textLength);
             log.info("文本长度: {}, 计算得到topK: {}", textLength, topK);
             
+            // 关系触发优先：短文本或包含明显关系短语时，优先执行实体+关系抽取
+            if (hanLPUtil.containsRelationTrigger(text)) {
+                log.info("检测到关系触发短语，优先执行实体+关系抽取");
+                return extractEntities(text);
+            }
+            
             if (textLength < 100) {
                 log.info("选择TF-IDF抽取策略");
                 return extractKeywordsByTFIDF(text, topK);
@@ -231,6 +244,33 @@ public class AgentExtractionServiceImpl implements AgentExtractionService {
             log.error("自动抽取失败", e);
             return createEmptyResult(text, "Auto");
         }
+    }
+    
+    /**
+     * 根据实体与关系列表生成三元组
+     */
+    private List<ExtractionTriple> buildTriples(List<ExtractionEntity> entities, List<ExtractionRelation> relations) {
+        if (entities == null || relations == null) {
+            return new ArrayList<>();
+        }
+        Map<String, ExtractionEntity> idToEntity = entities.stream()
+            .collect(Collectors.toMap(ExtractionEntity::getId, e -> e, (a, b) -> a));
+        List<ExtractionTriple> triples = new ArrayList<>();
+        for (ExtractionRelation r : relations) {
+            ExtractionEntity s = idToEntity.get(r.getSourceEntityId());
+            ExtractionEntity o = idToEntity.get(r.getTargetEntityId());
+            if (s == null || o == null) continue;
+            ExtractionTriple t = ExtractionTriple.builder()
+                .subject(s.getName())
+                .predicate(r.getRelationType())
+                .object(o.getName())
+                .confidence(r.getConfidence())
+                .subjectType(s.getType())
+                .objectType(o.getType())
+                .build();
+            triples.add(t);
+        }
+        return triples;
     }
     
     /**
@@ -266,6 +306,7 @@ public class AgentExtractionServiceImpl implements AgentExtractionService {
             .originalText(text)
             .entities(new ArrayList<>())
             .relations(new ArrayList<>())
+            .triples(new ArrayList<>())
             .keywordsTFIDF(new ArrayList<>())
             .keywordsTextRank(new ArrayList<>())
             .keySentences(new ArrayList<>())

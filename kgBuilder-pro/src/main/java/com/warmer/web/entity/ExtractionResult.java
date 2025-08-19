@@ -34,6 +34,11 @@ public class ExtractionResult {
     private List<ExtractionRelation> relations;
     
     /**
+     * 抽取得到的三元组 (subject, predicate, object)
+     */
+    private List<ExtractionTriple> triples;
+    
+    /**
      * 关键词列表 (TF-IDF)
      */
     private List<String> keywordsTFIDF;

@@ -12,7 +12,7 @@ export default {
    */
   extractKeywordsByTFIDF(data) {
     return request({
-      url: 'http://localhost:8080/api/agent/extract/tfidf',
+      url: '/api/agent/extract/tfidf',
       method: 'post',
       params: data
     })
@@ -26,7 +26,7 @@ export default {
    */
   extractKeywordsByTextRank(data) {
     return request({
-      url: 'http://localhost:8080/api/agent/extract/textrank',
+      url: '/api/agent/extract/textrank',
       method: 'post',
       params: data
     })
@@ -39,7 +39,7 @@ export default {
    */
   extractEntities(data) {
     return request({
-      url: 'http://localhost:8080/api/agent/extract/entities',
+      url: '/api/agent/extract/entities',
       method: 'post',
       params: data
     })
@@ -53,7 +53,7 @@ export default {
    */
   hybridExtract(data) {
     return request({
-      url: 'http://localhost:8080/api/agent/extract/hybrid',
+      url: '/api/agent/extract/hybrid',
       method: 'post',
       params: data
     })
@@ -66,7 +66,7 @@ export default {
    */
   autoExtract(data) {
     return request({
-      url: 'http://localhost:8080/api/agent/extract/auto',
+      url: '/api/agent/extract/auto',
       method: 'post',
       params: data
     })
@@ -77,8 +77,21 @@ export default {
    */
   getExtractionMethods() {
     return request({
-      url: 'http://localhost:8080/api/agent/methods',
+      url: '/api/agent/methods',
       method: 'get'
+    })
+  },
+
+  /**
+   * 直接导入三元组到图谱
+   * @param {Object} data { domain, source, triples: [{subject,predicate,object,confidence,subjectType,objectType}] }
+   */
+  importTriples(data) {
+    return request({
+      url: '/importTriples',
+      method: 'post',
+      data,
+      headers: { 'Content-Type': 'application/json' }
     })
   }
 } 

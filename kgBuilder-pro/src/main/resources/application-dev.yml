@@ -20,4 +20,10 @@ mybatis:
   mapperLocations: classpath*:/mapping/*.xml
 file:
   serverurl:  http://localhost:8080
-  location : /www/wwwroot/kgManger #D:\\kgmanager\\csv\\   #如果是Windows情况下，格式是 D:\\kgmanager\\csv\\   linx 格式"/home/kgmanager/csv/";
+  location : /www/wwwroot/kgManger #D:\\kgmanager\\csv\\   #如果是Windows情况下，格式是 D:\\kgmanager\\csv\\   linx 格式"/home/kgmanager/csv/"
+
+agent:
+  relationPatterns: classpath:agent/relation-patterns.txt
+  predicateSynonyms: classpath:agent/predicate-synonyms.txt
+  minRelationConfidence: 0.55
+  maxCharDistance: 40
